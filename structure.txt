@@ -1,0 +1,99 @@
+.
+├── .env.local
+├── .gitignore
+├── README.md
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── src
+│   ├── app
+│   │   ├── api
+│   │   │   ├── auth
+│   │   │   │   ├── [...nextauth]
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── check
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── login
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── logout
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── register
+│   │   │   │       └── route.ts
+│   │   │   ├── onboarding
+│   │   │   │   └── route.ts
+│   │   │   └── user
+│   │   │       └── onboarding-status
+│   │   │           └── route.ts
+│   │   ├── auth
+│   │   │   ├── error
+│   │   │   │   └── page.tsx
+│   │   │   ├── login
+│   │   │   │   └── page.tsx
+│   │   │   └── register
+│   │   │       └── page.tsx
+│   │   ├── dashboard
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── profile
+│   │   │       └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── onboarding
+│   │   │   ├── ProgressBar.tsx
+│   │   │   ├── StepLayout.tsx
+│   │   │   ├── step-1
+│   │   │   │   └── page.tsx
+│   │   │   ├── step-2
+│   │   │   │   └── page.tsx
+│   │   │   ├── step-3
+│   │   │   │   └── page.tsx
+│   │   │   └── step-4
+│   │   │       └── page.tsx
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── Loading.tsx
+│   │   ├── LogoutConfirmation.tsx
+│   │   ├── NavBar.tsx
+│   │   ├── ProtectedRoute.tsx
+│   │   └── auth
+│   │       └── ProtectedRoute.tsx
+│   ├── contexts
+│   │   └── AuthContext.tsx
+│   ├── hooks
+│   │   ├── useAuth.ts
+│   │   ├── useOnboarding.ts
+│   │   ├── useOnboardingAPI.ts
+│   │   └── useRedirectIfNotAuthenticated.ts
+│   ├── lib
+│   │   ├── db.ts
+│   │   ├── jwt.ts
+│   │   ├── mongo-adapter.ts
+│   │   └── mongodb.ts
+│   ├── middleware.ts
+│   ├── models
+│   │   └── User.ts
+│   ├── providers
+│   │   ├── AuthProvider.tsx
+│   │   └── StoreProvider.tsx
+│   ├── store
+│   │   └── onboardingStore.ts
+│   └── types
+│       ├── common.ts
+│       ├── next-auth.d.ts
+│       ├── onboarding.ts
+│       └── user.ts
+├── structure.txt
+├── tailwind.config.ts
+└── tsconfig.json
+
+34 directories, 63 files
