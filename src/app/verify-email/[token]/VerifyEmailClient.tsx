@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Loader } from 'lucide-react';
 
 interface VerifyEmailClientProps {
@@ -12,13 +12,13 @@ export default function VerifyEmailClient({ token }: VerifyEmailClientProps) {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    if (!token) {
-      setStatus('error');
-      setError('Aucun token de vérification fourni');
-      return;
-    }
-    
     const verifyEmail = async () => {
+      if (!token) {
+        setStatus('error');
+        setError('Aucun token de vérification fourni');
+        return;
+      }
+
       try {
         const response = await fetch('/api/auth/verify-token', {
           method: 'POST',
