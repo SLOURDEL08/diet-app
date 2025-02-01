@@ -3,16 +3,16 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Loader } from 'lucide-react';
 
-interface VerifyEmailClientProps {
-  token: string;
-}
-
-export default function VerifyEmailClient({ token }: VerifyEmailClientProps) {
+export default function EmailVerification() {
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const verifyEmail = async () => {
+      // Obtenir le token depuis l'URL
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+
       if (!token) {
         setStatus('error');
         setError('Aucun token de vérification fourni');
@@ -47,7 +47,7 @@ export default function VerifyEmailClient({ token }: VerifyEmailClientProps) {
     };
 
     verifyEmail();
-  }, [token]);
+  }, []);
 
   const handleClose = () => {
     if (window.opener) {
@@ -63,7 +63,7 @@ export default function VerifyEmailClient({ token }: VerifyEmailClientProps) {
             <Loader className="w-16 h-16 mb-4 text-indigo-600 animate-spin" />
             <h2 className="text-2xl font-bold text-gray-900">Vérification en cours...</h2>
             <p className="mt-2 text-gray-600 text-center">
-              Nous vérifions votre lien de confirmation demail.
+              Nous vérifions votre lien de confirmation d&apos;email.
             </p>
           </div>
         );

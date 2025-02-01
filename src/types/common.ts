@@ -1,13 +1,16 @@
+import { Types } from 'mongoose';
+
 export interface IOnboardingData {
-  userId: string;
+  userId: Types.ObjectId;
   profession?: string;
   interests?: string[];
   preferences?: {
     theme?: 'light' | 'dark';
     notifications?: boolean;
     language?: string;
+    emailFrequency?: 'daily' | 'weekly' | 'monthly' | 'never';
+        emailValidated?: boolean;  // Ajout de cette propriété
   };
-  emailVerified?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

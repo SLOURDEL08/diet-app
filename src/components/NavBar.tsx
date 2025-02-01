@@ -16,6 +16,9 @@ import { useTheme } from 'next-themes';
 interface NavBarProps {
   isExpanded: boolean;
 }
+interface QuickActionsProps {
+  isExpanded: boolean;
+}
 
 const navigationItems = [
   { icon: Home, label: 'Tableau de bord', href: '/dashboard' },
@@ -52,7 +55,7 @@ const quickActions = [
   }
 ];
 
-const QuickActions = ({ isExpanded }) => {
+const QuickActions: React.FC<QuickActionsProps> = ({ isExpanded }) => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 

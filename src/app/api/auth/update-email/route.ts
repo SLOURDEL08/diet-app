@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { User } from '@/models/User';
 import { verifyJWT } from '@/lib/jwt';
 import connectDB from '@/lib/mongodb';
+import { cookies } from 'next/headers';
 
 function isValidEmail(email: string) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -12,8 +13,10 @@ export async function PUT(request: Request) {
   try {
     await connectDB();
     
-    // Vérifier le token
-    const token = request.cookies.get('auth-token')?.value;
+    // Vérifier le token en utilisant l'API cookies de Next.js
+    const cookieStore = await cookies();
+    const token = cookieStore.get('auth-token')?.value;
+    
     if (!token) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
@@ -22,7 +25,7 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const email = body.email;
 
-    console.log('Email reçu:', email); // Log pour debug
+    console.log('Email reçu:', email);
 
     if (!email) {
       return NextResponse.json({ 
@@ -69,7 +72,7 @@ export async function PUT(request: Request) {
       }, { status: 404 });
     }
 
-    console.log('Mise à jour réussie pour l\'utilisateur:', user._id); // Log pour debug
+    console.log('Mise à jour réussie pour l\'utilisateur:', user._id);
 
     return NextResponse.json({ 
       success: true,

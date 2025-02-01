@@ -1,23 +1,39 @@
 import nodemailer from 'nodemailer';
+import { Options } from 'nodemailer/lib/mailer';
 
-// Configurez votre transporteur email
+if (!process.env.EMAIL_USER) {
+  throw new Error('EMAIL_USER environment variable is not defined');
+}
+
+if (!process.env.EMAIL_HOST) {
+  throw new Error('EMAIL_HOST environment variable is not defined');
+}
+
+if (!process.env.EMAIL_PASSWORD) {
+  throw new Error('EMAIL_PASSWORD environment variable is not defined');
+}
+
+// Configuration du transporteur email avec des variables d'environnement vérifiées
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: parseInt(process.env.EMAIL_PORT || '465'),
-  secure: true, // true pour le port 465
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
 });
 
-export async function sendVerificationEmail(email: string, token: string) {
+export async function sendVerificationEmail(email: string, token: string): Promise<void> {
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email/${token}`;
-
-  const mailOptions = {
+  
+  // Assertion de type pour garantir que EMAIL_USER existe
+  const emailFrom = process.env.EMAIL_USER as string;
+  
+  const mailOptions: Options = {
     from: {
       name: 'Diet App',
-      address: process.env.EMAIL_USER // Utiliser EMAIL_USER au lieu de EMAIL_FROM
+      address: emailFrom
     },
     to: email,
     subject: 'Vérifiez votre adresse email',
@@ -27,8 +43,8 @@ export async function sendVerificationEmail(email: string, token: string) {
         <p>Bonjour,</p>
         <p>Pour continuer votre inscription, veuillez cliquer sur le lien ci-dessous pour vérifier votre adresse email :</p>
         <p style="margin: 20px 0;">
-          <a href="${verificationUrl}" 
-             style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+          <a href="${verificationUrl}"
+              style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
             Vérifier mon email
           </a>
         </p>
@@ -47,7 +63,6 @@ export async function sendVerificationEmail(email: string, token: string) {
     // Envoyer l'email
     const info = await transporter.sendMail(mailOptions);
     console.log('Email envoyé:', info.messageId);
-    return true;
   } catch (error) {
     console.error('Erreur d\'envoi d\'email:', error);
     throw error;

@@ -39,7 +39,7 @@ export default function DashboardLayout({
           ${isNavExpanded ? 'ml-64' : 'ml-20'}`}
         >
           <div className="absolute top-4 right-4 z-50">
-            <ThemeToggle />
+            <ThemeToggle isExpanded />
           </div>
           <div className="h-full">
             {children}

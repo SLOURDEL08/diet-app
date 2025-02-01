@@ -84,29 +84,34 @@ export default function Step5() {
   }, [email, handleVerificationLink]);
 
   const checkVerificationStatus = useCallback(async () => {
-    try {
-  setCheckingStatus(true);
-  const response = await fetch('/api/auth/check-verification', { 
-    method: 'GET',
-    headers: { 
-      'Accept': 'application/json',
-      'Cache-Control': 'no-cache'
+  try {
+    setCheckingStatus(true);
+    const response = await fetch('/api/auth/check-verification', { 
+      method: 'GET',
+      headers: { 
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache'
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (data.verified) {
+      setIsVerified(true);
+      setStatus('success');
+      // Au lieu de sauvegarder emailVerified, sauvegardez une préférence ou progression d'onboarding
+      await saveStepData({
+        preferences: {
+          emailValidated: true
+        }
+      });
     }
-  });
-  
-  const data = await response.json();
-  
-  if (data.verified) {
-    setIsVerified(true);
-    setStatus('success');
-    await saveStepData({ emailVerified: true });
+  } catch {
+    console.error('Erreur de vérification');
+  } finally {
+    setCheckingStatus(false);
   }
-} catch {
-  console.error('Erreur de vérification');
-} finally {
-  setCheckingStatus(false);
-}
-  }, [saveStepData]);
+}, [saveStepData]);
 
   const updateEmail = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();

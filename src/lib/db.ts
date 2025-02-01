@@ -1,5 +1,6 @@
-import { User, OnboardingData } from '@/models/User';
-import { IUser, OnboardingData as IOnboardingData } from '@/types/user';
+import { User, OnboardingDataModel } from '@/models/User';
+import { IUser } from '@/types/user';
+import { IOnboardingData } from '@/types/common';
 import connectDB from './mongodb';
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {
@@ -19,7 +20,7 @@ export async function createUser(userData: Partial<IUser>): Promise<IUser> {
 
 export async function getOnboardingData(userId: string): Promise<IOnboardingData | null> {
   await connectDB();
-  return OnboardingData.findOne({ userId });
+  return OnboardingDataModel.findOne({ userId });
 }
 
 export async function updateOnboardingData(
@@ -27,7 +28,7 @@ export async function updateOnboardingData(
   data: Partial<IOnboardingData>
 ): Promise<IOnboardingData | null> {
   await connectDB();
-  return OnboardingData.findOneAndUpdate(
+  return OnboardingDataModel.findOneAndUpdate(
     { userId },
     { $set: data },
     { new: true, upsert: true }

@@ -1,4 +1,18 @@
-export const themeConfig = {
+type ThemeCategories = {
+  background: Record<string, string>;
+  text: Record<string, string>;
+  border: Record<string, string>;
+  overlay: Record<string, string>;
+  card: Record<string, string>;
+  accent: Record<string, string>;
+};
+
+type Theme = {
+  light: ThemeCategories;
+  dark: ThemeCategories;
+};
+
+export const themeConfig: Theme = {
   light: {
     background: {
       primary: '#FFFFFF',
@@ -53,7 +67,22 @@ export const themeConfig = {
       hover: '#D0F010',
     },
   },
-} as const;
+};
+
+type ThemeMode = keyof Theme;
+type ThemeCategory = keyof ThemeCategories;
+
+export function getThemeColor(
+  category: ThemeCategory, 
+  type: string, 
+  mode: ThemeMode = 'light'
+): string {
+  const value = themeConfig[mode][category][type];
+  if (typeof value !== 'string') {
+    throw new Error(`Invalid theme value for ${category}.${type} in ${mode} mode`);
+  }
+  return value;
+}
 
 export function generateThemeClasses() {
   return {
@@ -75,15 +104,4 @@ export function generateThemeClasses() {
     'accent-theme-primary': 'text-lime-500',
     'accent-theme-hover': 'hover:text-lime-600 dark:hover:text-lime-400'
   } as const;
-}
-
-type ThemeCategory = keyof typeof themeConfig.light;
-type ThemeType<T extends ThemeCategory> = keyof typeof themeConfig.light[T];
-
-export function getThemeColor<T extends ThemeCategory>(
-  category: T,
-  type: ThemeType<T>,
-  mode: 'light' | 'dark' = 'light'
-) {
-  return themeConfig[mode][category][type];
 }

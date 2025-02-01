@@ -1,20 +1,10 @@
-import { Metadata } from 'next';
-import VerifyEmailClient from './VerifyEmailClient';
+// app/verify-email/page.tsx
+import EmailVerification from '@/components/EmailVerification';
 
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: { token: string } 
-}): Promise<Metadata> {
-  return {
-    title: `Vérification Email - ${params.token.slice(0, 10)}...`
-  };
-}
+export const metadata = {
+  title: 'Vérification Email',
+};
 
-export default function VerifyEmailPage({ 
-  params 
-}: { 
-  params: { token: string } 
-}) {
-  return <VerifyEmailClient token={params.token} />;
+export default function VerifyEmailPage() {
+  return <EmailVerification />;
 }

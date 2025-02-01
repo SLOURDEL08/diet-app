@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IUser } from '@/types/user';
-import { IOnboardingData} from '@/types/common'
+import { IOnboardingData } from '@/types/common';
 
 const userSchema = new Schema<IUser>({
   email: {

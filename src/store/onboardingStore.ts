@@ -1,6 +1,9 @@
+
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { OnboardingStore, OnboardingStep } from '@/types/onboarding';
+import { Types } from 'mongoose';
 
 const TOTAL_STEPS = 6;
 
@@ -43,13 +46,16 @@ const initialSteps: OnboardingStep[] = [
   },
 ];
 
+// Fonction utilitaire pour créer un ObjectId vide
+const createEmptyObjectId = () => new Types.ObjectId();
+
 export const useOnboardingStore = create<OnboardingStore>()(
   persist(
     (set) => ({
       currentStep: 1,
       steps: initialSteps,
       data: {
-        userId: '',
+        userId: createEmptyObjectId(), // Utilisation d'un ObjectId au lieu d'une chaîne vide
         profession: '',
         interests: [],
         preferences: {
@@ -57,7 +63,6 @@ export const useOnboardingStore = create<OnboardingStore>()(
           notifications: true,
           language: 'fr'
         },
-        emailVerified: false
       },
       isCompleted: false,
 
@@ -65,7 +70,6 @@ export const useOnboardingStore = create<OnboardingStore>()(
         const validStep = Math.min(Math.max(1, step), TOTAL_STEPS);
         set({ currentStep: validStep });
 
-        // Marquer toutes les étapes précédentes comme complétées
         set((state) => ({
           steps: state.steps.map((s) => ({
             ...s,
@@ -95,7 +99,10 @@ export const useOnboardingStore = create<OnboardingStore>()(
         set((state) => ({
           data: {
             ...state.data,
-            emailVerified: verified
+            preferences: {
+              ...state.data.preferences,
+              emailValidated: verified
+            }
           },
           steps: state.steps.map((step) =>
             step.id === 5 ? { ...step, isCompleted: verified } : step
@@ -108,15 +115,14 @@ export const useOnboardingStore = create<OnboardingStore>()(
           currentStep: 1,
           steps: initialSteps.map(step => ({ ...step, isCompleted: false })),
           data: {
-            userId: '',
+            userId: createEmptyObjectId(), // Utilisation d'un ObjectId au lieu d'une chaîne vide
             profession: '',
             interests: [],
             preferences: {
               theme: 'light',
               notifications: true,
               language: 'fr'
-            },
-            emailVerified: false
+            }
           },
           isCompleted: false,
         });
