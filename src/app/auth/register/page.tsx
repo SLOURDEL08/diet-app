@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { UserPlus, AlertCircle, Loader2, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { useThemeConfig } from '@/hooks/useTheme';
 
 // Optimisation des variants d'animation
@@ -160,8 +159,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#170312] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-      <ThemeToggle />
-
       <motion.div {...pageTransition} className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-slate-900 dark:text-white">

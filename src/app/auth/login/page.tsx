@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogIn, AlertCircle, Loader2, Sun, Moon } from 'lucide-react';
+import { LogIn, AlertCircle, Loader2 } from 'lucide-react';
 import { useThemeConfig } from '@/hooks/useTheme';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -76,7 +74,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#170312] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
       {/* Theme Toggle Button */}
-      <ThemeToggle/>
 
       <motion.div
         variants={containerVariants}

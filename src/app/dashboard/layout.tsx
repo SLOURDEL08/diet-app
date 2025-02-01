@@ -4,7 +4,6 @@ import { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import { useAuth } from '@/contexts/AuthContext';
 import Loading from '@/components/Loading';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function DashboardLayout({
   children,
@@ -24,7 +23,7 @@ export default function DashboardLayout({
 
   return (
 
-      <div className="h-screen flex overflow-hidden bg-white dark:bg-gray-900">
+      <div className="h-screen flex  bg-white dark:bg-gray-900">
         {/* Navbar avec gestion de l'état */}
         <div 
           onMouseEnter={() => setIsNavExpanded(true)}
@@ -36,12 +35,10 @@ export default function DashboardLayout({
 
         {/* Main Content avec transition */}
         <main className={`flex-1 min-h-screen relative transition-all duration-300 ease-in-out
-          ${isNavExpanded ? 'ml-64' : 'ml-20'}`}
+          ${isNavExpanded ? 'ml-56' : 'ml-20'}`}
         >
-          <div className="absolute top-4 right-4 z-50">
-            <ThemeToggle />
-          </div>
-          <div className="h-full">
+
+          <div className="h-full ">
             {children}
           </div>
         </main>
