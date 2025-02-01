@@ -19,7 +19,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
 
  
 
@@ -57,7 +57,7 @@ export default function Home() {
             
             <div className="flex items-center gap-4">
               {/* Thème toggle */}
-              <ThemeToggle/>
+              <ThemeToggle isExpanded/>
 
               {/* Menu mobile */}
               <button 

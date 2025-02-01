@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import StepLayout from '@/app/onboarding/StepLayout';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ArrowRight, Briefcase } from 'lucide-react';
 import {
@@ -48,7 +47,7 @@ export default function Step2() {
   const [profession, setProfession] = useState('');
   const [otherProfession, setOtherProfession] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

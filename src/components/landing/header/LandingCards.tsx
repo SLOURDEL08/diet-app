@@ -114,7 +114,7 @@ export default function LandingCards() {
 
         <div className="space-y-4">
           <p className="text-base text-gray-600 italic leading-relaxed">
-            "{reviews[currentReview].text}"
+            {reviews[currentReview].text}
           </p>
           <div className="flex items-center justify-between">
             <div>
@@ -206,7 +206,7 @@ export default function LandingCards() {
             Prêt à Commencer ?
           </h3>
           <p className="text-black/80 text-lg mb-8 leading-relaxed">
-            Rejoignez des milliers d'utilisateurs et transformez votre façon de travailler dès aujourd'hui.
+            Rejoignez des milliers dutilisateurs et transformez votre façon de travailler dès aujourdhui.
           </p>
           
         </div>

@@ -7,7 +7,7 @@ import { IOnboardingData } from '@/types/common';
 export const useOnboarding = () => {
   const router = useRouter();
   const { user } = useAuth();
-  
+
   const {
     currentStep,
     steps,
@@ -30,7 +30,7 @@ export const useOnboarding = () => {
     try {
       // Mettre à jour le store local d'abord
       updateData(stepData);
-      
+
       // Sauvegarder dans la base de données
       const response = await fetch('/api/onboarding', {
         method: 'POST',
@@ -49,7 +49,7 @@ export const useOnboarding = () => {
 
       // Marquer l'étape comme complétée
       setStepCompleted(currentStep);
-      
+
       return true;
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
@@ -65,7 +65,7 @@ export const useOnboarding = () => {
     }
 
     const nextStep = currentStep + 1;
-    
+
     try {
       if (nextStep > steps.length) {
         await completeOnboarding();
@@ -107,7 +107,7 @@ export const useOnboarding = () => {
         setCurrentStep(urlStep);
       }
     }
-  }, []);
+  }, [currentStep, setCurrentStep]);
 
   return {
     currentStep,

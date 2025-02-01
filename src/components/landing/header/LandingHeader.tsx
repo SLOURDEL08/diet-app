@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { 
   RocketIcon, 
@@ -12,25 +12,11 @@ import { Button } from '@/components/ui/button';
 import LandingCards from './LandingCards';
 
 export default function LandingHeader() {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
 
   useEffect(() => {
     setIsClient(true);
-
-    // Gestion du scroll indicator
-    const handleScroll = () => {
-      if (window.scrollY > 100) {
-        setShowScrollIndicator(false);
-      } else {
-        setShowScrollIndicator(true);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const togglePlayback = () => {
@@ -66,10 +52,8 @@ export default function LandingHeader() {
             />
           </div>
 
-
-
           {/* Overlay gradient */}
-          <div className="absolute inset-0 "></div>
+          <div className="absolute inset-0"></div>
           
           {/* Contrôle de lecture */}
           <div className="absolute bottom-8 right-8 z-20 flex items-center">
@@ -94,7 +78,7 @@ export default function LandingHeader() {
       )}
 
       <div className="relative z-10 h-full flex items-center">
-        <div className=" px-4 sm:px-6 lg:px-8 w-full">
+        <div className="px-4 sm:px-6 lg:px-8 w-full">
           <div className="text-left">
             {/* Badge */}
             <div className="inline-block mb-8">
@@ -130,12 +114,10 @@ export default function LandingHeader() {
               </Button>
             </div>
 
-                     <LandingCards/>
+            <LandingCards />
           </div>
         </div>
       </div>
-
-   
     </header>
   );
 }

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Mail, Clock, Loader2, Edit2, ArrowRight } from 'lucide-react';
+import { CheckCircle, Mail, Loader2, Edit2, ArrowRight } from 'lucide-react';
 import StepLayout from '@/app/onboarding/StepLayout';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useAuth } from '@/contexts/AuthContext';
 import { useThemeConfig } from '@/hooks/useTheme';
+import { IUser } from '@/types/user';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -24,44 +25,18 @@ const itemVariants = {
 };
 
 export default function Step5() {
-  const { user } = useAuth();
+  const { user } = useAuth() as { user: IUser | null };
   const { saveStepData, handleNextStep } = useOnboarding();
   const [email, setEmail] = useState(user?.email || '');
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'pending' | 'success' | 'error'>('pending');
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(user?.emailVerified || false);
   const [isLoading, setIsLoading] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(false);
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
 
-  // Message window listener
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin === window.location.origin && event.data === 'emailVerified') {
-        checkVerificationStatus();
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  // Initial verification check
-  useEffect(() => {
-    if (!user?.emailVerified) {
-      sendVerificationEmail();
-    }
-  }, []);
-
-  // Periodic verification check
-  useEffect(() => {
-    if (!isVerified) {
-      const interval = setInterval(checkVerificationStatus, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [isVerified]);
-
-  const handleVerificationLink = async (token: string) => {
+  const handleVerificationLink = useCallback((token: string) => {
     const width = 500;
     const height = 600;
     const left = window.screen.width / 2 - width / 2;
@@ -72,99 +47,122 @@ export default function Step5() {
       'EmailVerification',
       `width=${width},height=${height},left=${left},top=${top}`
     );
-  };
+  }, []);
 
-  const checkVerificationStatus = async () => {
-    try {
-      setCheckingStatus(true);
-      const response = await fetch('/api/auth/check-verification', { 
-        method: 'GET',
-        headers: { 
-          'Accept': 'application/json',
-          'Cache-Control': 'no-cache'
-        }
-      });
-      
-      const data = await response.json();
-      
-      if (data.verified) {
-        setIsVerified(true);
-        setStatus('success');
-        await saveStepData({ emailVerified: true });
-      }
-    } catch (error) {
-      console.error('Erreur de vérification:', error);
-    } finally {
-      setCheckingStatus(false);
+  const sendVerificationEmail = useCallback(async () => {
+   try {
+  setIsLoading(true);
+  setStatus('pending');
+  
+  const response = await fetch('/api/auth/verify-email', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    if (data.verificationToken) {
+      handleVerificationLink(data.verificationToken);
     }
-  };
+    setMessage('Consultez vos emails pour valider votre adresse.');
+    setStatus('success');
+  } else {
+    throw new Error(data.error || 'Erreur d\'envoi');
+  }
+} catch {
+  setMessage('Erreur lors de l\'envoi. Veuillez réessayer.');
+  setStatus('error');
+} finally {
+  setIsLoading(false);
+}
+  }, [email, handleVerificationLink]);
 
-  const sendVerificationEmail = async () => {
+  const checkVerificationStatus = useCallback(async () => {
     try {
-      setIsLoading(true);
-      setStatus('pending');
-      
-      const response = await fetch('/api/auth/verify-email', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        credentials: 'include', // Ajout des credentials
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        if (data.verificationToken) {
-          handleVerificationLink(data.verificationToken);
-        }
-        setMessage('Consultez vos emails pour valider votre adresse.');
-        setStatus('success');
-      } else {
-        throw new Error(data.error || 'Erreur d\'envoi');
-      }
-    } catch (error) {
-      setMessage('Erreur lors de l\'envoi. Veuillez réessayer.');
-      setStatus('error');
-    } finally {
-      setIsLoading(false);
+  setCheckingStatus(true);
+  const response = await fetch('/api/auth/check-verification', { 
+    method: 'GET',
+    headers: { 
+      'Accept': 'application/json',
+      'Cache-Control': 'no-cache'
     }
-  };
+  });
+  
+  const data = await response.json();
+  
+  if (data.verified) {
+    setIsVerified(true);
+    setStatus('success');
+    await saveStepData({ emailVerified: true });
+  }
+} catch {
+  console.error('Erreur de vérification');
+} finally {
+  setCheckingStatus(false);
+}
+  }, [saveStepData]);
 
-  const updateEmail = async (e: React.FormEvent) => {
+  const updateEmail = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setIsLoading(true);
-      const response = await fetch('/api/auth/update-email', {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        credentials: 'include', // Ajout des credentials
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
-      });
+  setIsLoading(true);
+  const response = await fetch('/api/auth/update-email', {
+    method: 'PUT',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify({ email: email.trim().toLowerCase() }),
+  });
 
-      const data = await response.json();
+  const data = await response.json();
 
-      if (response.ok) {
-        setMessage('Email mis à jour. Vérifiez vos nouveaux emails.');
-        setStatus('success');
-        setIsEditing(false);
-        setIsVerified(false);
-        await sendVerificationEmail();
-      } else {
-        throw new Error(data.error || 'Erreur de mise à jour');
+  if (response.ok) {
+    setMessage('Email mis à jour. Vérifiez vos nouveaux emails.');
+    setStatus('success');
+    setIsEditing(false);
+    setIsVerified(false);
+    await sendVerificationEmail();
+  } else {
+    throw new Error(data.error || 'Erreur de mise à jour');
+  }
+} catch (error) {
+  setMessage(error instanceof Error ? error.message : 'Erreur de mise à jour. Veuillez réessayer.');
+  setStatus('error');
+} finally {
+  setIsLoading(false);
+}
+  }, [email, sendVerificationEmail]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin === window.location.origin && event.data === 'emailVerified') {
+        checkVerificationStatus();
       }
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Erreur de mise à jour. Veuillez réessayer.');
-      setStatus('error');
-    } finally {
-      setIsLoading(false);
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [checkVerificationStatus]);
+
+  useEffect(() => {
+    if (user && !user.emailVerified) {
+      sendVerificationEmail();
     }
-  };
+  }, [user, sendVerificationEmail]);
+
+  useEffect(() => {
+    if (!isVerified) {
+      const interval = setInterval(checkVerificationStatus, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isVerified, checkVerificationStatus]);
 
   return (
     <StepLayout

@@ -6,13 +6,14 @@ import StepLayout from '@/app/onboarding/StepLayout';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { UserCircle, Sparkles, ArrowRight } from 'lucide-react';
 import { useThemeConfig } from '@/hooks/useTheme';
+import { IOnboardingData } from '@/types/common';
 
 export default function Step1() {
   const { saveStepData, handleNextStep } = useOnboarding();
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,14 +21,19 @@ export default function Step1() {
     setIsLoading(true);
 
     try {
-      const success = await saveStepData({ name: name.trim() });
+      const stepData: Partial<IOnboardingData> = {
+        profession: name.trim()
+      };
+
+      const success = await saveStepData(stepData);
       if (success) {
         await handleNextStep();
       } else {
         throw new Error('Erreur de sauvegarde');
       }
-    } catch (err) {
-      setError('Une erreur est survenue. Veuillez réessayer.');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Une erreur est survenue. Veuillez réessayer.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +79,7 @@ export default function Step1() {
               htmlFor="name"
               className="block text-lg font-medium text-slate-900 dark:text-white"
             >
-              Comment souhaitez-vous qu'on vous appelle ?
+              Comment souhaitez-vous quon vous appelle ?
             </label>
             <div className="relative">
               <input
@@ -171,7 +177,7 @@ export default function Step1() {
               </>
             ) : (
               <>
-                <span>C'est parti !</span>
+                <span>Cest parti !</span>
                 <ArrowRight className="w-5 h-5" />
               </>
             )}

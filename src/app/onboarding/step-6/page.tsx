@@ -2,13 +2,13 @@
 
 import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight, Sparkles, User, Mail, Settings } from 'lucide-react';
 import StepLayout from '@/app/onboarding/StepLayout';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useAuth } from '@/contexts/AuthContext';
-import { loadFull } from "tsparticles";
-import Particles from "react-tsparticles";
+import { IUser } from '@/types/user';
+import { IOnboardingData } from '@/types/common';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -41,107 +41,43 @@ const completedSteps = [
     icon: Settings,
     description: 'Vos préférences sont enregistrées'
   }
-];
+] as const;
 
 export default function Step6() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useAuth() as { user: IUser | null };
   const { saveStepData } = useOnboarding();
 
-  const particlesInit = useCallback(async (engine) => {
-    await loadFull(engine);
-  }, []);
-
   useEffect(() => {
-    saveStepData({ onboardingCompleted: true });
-  }, []);
+    const completeOnboarding = async () => {
+      try {
+        await saveStepData({ 
+          onboardingStep: 6,
+          onboardingCompleted: true 
+        } as Partial<IOnboardingData>);
+      } catch (error) {
+        console.error('Erreur lors de la finalisation de l\'onboarding:', error);
+      }
+    };
+    
+    completeOnboarding();
+  }, [saveStepData]);
 
-  const handleGoToDashboard = () => {
+  const handleGoToDashboard = useCallback(() => {
     router.push('/dashboard');
-  };
+  }, [router]);
 
   return (
     <StepLayout
       title="Félicitations !"
       description="Votre compte est maintenant configuré"
     >
-      {/* Confetti Animation */}
-      <Particles
-        id="confetti"
-        init={particlesInit}
-        options={{
-          fullScreen: false,
-          particles: {
-            number: {
-              value: 0
-            },
-            color: {
-              value: ["#C7EF00", "#ffffff", "#170312"]
-            },
-            shape: {
-              type: ["circle", "square"]
-            },
-            opacity: {
-              value: 1,
-              animation: {
-                enable: true,
-                minimumValue: 0,
-                speed: 2,
-                startValue: "max",
-                destroy: "min"
-              }
-            },
-            size: {
-              value: 4,
-              random: {
-                enable: true,
-                minimumValue: 2
-              }
-            },
-            life: {
-              duration: {
-                sync: true,
-                value: 5
-              },
-              count: 1
-            },
-            move: {
-              enable: true,
-              gravity: {
-                enable: true,
-                acceleration: 10
-              },
-              speed: 20,
-              direction: "none",
-              random: false,
-              straight: false,
-              outModes: {
-                default: "destroy",
-                top: "none"
-              }
-            }
-          },
-          emitters: {
-            position: {
-              x: 50,
-              y: 25
-            },
-            rate: {
-              quantity: 5,
-              delay: 0.15
-            }
-          }
-        }}
-        className="absolute inset-0 pointer-events-none"
-      />
-
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="max-w-2xl mx-auto space-y-12 relative z-10"
       >
-        {/* Success Icon */}
         <motion.div 
           variants={itemVariants}
           className="flex flex-col items-center"
@@ -171,7 +107,6 @@ export default function Step6() {
             </motion.div>
           </div>
 
-          {/* Welcome Message */}
           <motion.div 
             variants={itemVariants}
             className="text-center mt-8 space-y-3"
@@ -185,7 +120,6 @@ export default function Step6() {
           </motion.div>
         </motion.div>
 
-        {/* Completed Steps */}
         <motion.div 
           variants={itemVariants}
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
@@ -215,7 +149,6 @@ export default function Step6() {
           ))}
         </motion.div>
 
-        {/* Dashboard Button */}
         <motion.div variants={itemVariants} className="flex justify-center">
           <motion.button
             onClick={handleGoToDashboard}

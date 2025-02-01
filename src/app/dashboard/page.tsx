@@ -1,53 +1,27 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/contexts/AuthContext';
 import { useOnboardingStore } from '@/store/onboardingStore';
 import { ThemeWrapper } from '@/hooks/useTheme';
 import { useThemeConfig } from '@/hooks/useTheme';
 import { 
-  User, 
-  Briefcase, 
-  Star, 
   Moon, 
   Bell,
   Globe,
-  Mail,
   Settings,
   TrendingDown,
   ChevronRight,
   TrendingUp,
-  Calendar,
-  Activity,
   Target,
-  Award,
-  BarChart2,
   CheckCircle2,
-  AlertCircle,
-  XCircle,
-  InfoIcon
+  BarChart2
 } from 'lucide-react';
 import FavoriteRecipesCard from '@/components/FavoriteRecipeCard';
 import { ProfileMenu } from '@/components/ProfileMenu';
-import FitnessWidget, { ActivityFeed } from '@/components/ActivityFeed';
+import FitnessWidget from '@/components/ActivityFeed';
 
 // Types
-type StatCard = {
-  title: string;
-  value: string | number;
-  description: string;
-  icon: React.ComponentType<any>;
-  gradientColor?: string;
-};
-
-type Activity = {
-  id: string;
-  action: string;
-  timestamp: Date;
-  type: 'success' | 'warning' | 'error' | 'info';
-};
-
 type Goal = {
   id: string;
   label: string;
@@ -63,8 +37,10 @@ type Metric = {
   trendDirection: 'up' | 'down' | 'neutral';
 };
 
+type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>;
+
 type Preference = {
-  icon: React.ComponentType<any>;
+  icon: IconComponent;
   title: string;
   value: string;
   href?: string;
@@ -86,33 +62,6 @@ const itemVariants = {
 };
 
 // Mock data
-const mockActivities: Activity[] = [
-  {
-    id: '1',
-    action: 'Objectif atteint',
-    timestamp: new Date(Date.now() - 3600000),
-    type: 'success'
-  },
-  {
-    id: '2',
-    action: 'Nouvelle tâche ajoutée',
-    timestamp: new Date(Date.now() - 7200000),
-    type: 'info'
-  },
-  {
-    id: '3',
-    action: 'Attention requise',
-    timestamp: new Date(Date.now() - 10800000),
-    type: 'warning'
-  },
-  {
-    id: '4',
-    action: 'Erreur système',
-    timestamp: new Date(Date.now() - 14400000),
-    type: 'error'
-  }
-];
-
 const mockGoals: Goal[] = [
   {
     id: '1',
@@ -156,48 +105,9 @@ const mockMetrics: Metric[] = [
   }
 ];
 
-// Components
-const ActivityIcon = ({ type }: { type: Activity['type'] }) => {
-  const icons = {
-    success: <CheckCircle2 className="h-4 w-4 text-primary" />,
-    warning: <AlertCircle className="h-4 w-4 text-yellow-500" />,
-    error: <XCircle className="h-4 w-4 text-red-500" />,
-    info: <InfoIcon className="h-4 w-4 text-blue-500" />
-  };
-  return icons[type];
-};
-
-const StatCard = ({ title, value, description, icon: Icon }: StatCard) => (
-  <motion.div
-    variants={itemVariants}
-    className="relative overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 
-               bg-white dark:bg-white/10 backdrop-blur-md transition-all duration-200"
-    whileHover={{ scale: 1.02 }}
-  >
-    <div className="relative p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="p-3 rounded-xl bg-slate-100 dark:bg-white/10">
-          <Icon className="h-5 w-5 text-primary" />
-        </div>
-        <span className="text-sm font-medium text-slate-600 dark:text-white/60">
-          {title}
-        </span>
-      </div>
-      <p className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-        {value}
-      </p>
-      <p className="text-slate-600 dark:text-white/60 text-sm">
-        {description}
-      </p>
-    </div>
-  </motion.div>
-);
-
 export default function Dashboard() {
-  const { user } = useAuth();
   const onboardingData = useOnboardingStore((state) => state.data);
   const { isDarkMode } = useThemeConfig();
-  const [activities] = useState<Activity[]>(mockActivities);
   const [goals] = useState<Goal[]>(mockGoals);
   const [metrics] = useState<Metric[]>(mockMetrics);
 
@@ -222,7 +132,7 @@ export default function Dashboard() {
 
   return (
     <ThemeWrapper>
-      <div className="min-h-screen  bg-slate-50 dark:bg-[#00000010] transition-colors duration-300 p-6">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#00000010] transition-colors duration-300 p-6">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -246,7 +156,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-12 gap-6">
             {/* Left Column - Main Content */}
             <div className="col-span-12 lg:col-span-8 space-y-6">
-              {/* Favorite Recipes Section - Tall */}
+              {/* Favorite Recipes Section */}
               <motion.div 
                 variants={itemVariants} 
                 className="h-[calc(100vh-16rem)] min-h-[600px]"
@@ -355,10 +265,10 @@ export default function Dashboard() {
 
             {/* Right Column - Sidebar */}
             <div className="col-span-12 lg:col-span-4 space-y-6">
-              {/* Activités récentes */}
-               <motion.div variants={itemVariants}>
-    <FitnessWidget />
-  </motion.div>
+              {/* Widget */}
+              <motion.div variants={itemVariants}>
+                <FitnessWidget />
+              </motion.div>
 
               {/* Préférences */}
               <motion.div variants={itemVariants}>

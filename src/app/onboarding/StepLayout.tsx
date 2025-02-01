@@ -21,7 +21,7 @@ export default function OnboardingLayout({
 }: OnboardingLayoutProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
   const { currentStep, steps } = useOnboardingStore();
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function OnboardingLayout({
     <ThemeWrapper>
       <div className="min-h-screen py-12 px-4 bg-slate-50 dark:bg-[#170312] transition-colors duration-300">
         <div className="fixed top-6 right-6">
-          <ThemeToggle />
+          <ThemeToggle isExpanded />
         </div>
         
         <motion.div

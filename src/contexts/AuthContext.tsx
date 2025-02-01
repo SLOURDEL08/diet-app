@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
@@ -25,38 +25,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const checkAuth = async () => {
-  try {
-    const response = await fetch('/api/auth/check', {
-      credentials: 'include',
-      cache: 'no-store' // Important pour éviter le cache
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      setUser(data.user);
+  const checkAuth = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/check', {
+        credentials: 'include',
+        cache: 'no-store' // Important pour éviter le cache
+      });
       
-      // Si l'utilisateur est authentifié mais pas sur la bonne page
-      if (window.location.pathname !== '/auth/login' && window.location.pathname !== '/auth/register') {
-        if (data.user.onboardingCompleted) {
-          if (window.location.pathname.startsWith('/onboarding')) {
-            router.push('/dashboard');
-          }
-        } else {
-          if (!window.location.pathname.startsWith('/onboarding')) {
-            router.push(`/onboarding/step-${data.user.onboardingStep || 1}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        
+        // Si l'utilisateur est authentifié mais pas sur la bonne page
+        if (window.location.pathname !== '/auth/login' && window.location.pathname !== '/auth/register') {
+          if (data.user.onboardingCompleted) {
+            if (window.location.pathname.startsWith('/onboarding')) {
+              router.push('/dashboard');
+            }
+          } else {
+            if (!window.location.pathname.startsWith('/onboarding')) {
+              router.push(`/onboarding/step-${data.user.onboardingStep || 1}`);
+            }
           }
         }
+      } else {
+        setUser(null);
       }
-    } else {
+    } catch  {
       setUser(null);
+    } finally {
+      setLoading(false);
     }
-  } catch  {
-    setUser(null);
-  } finally {
-    setLoading(false);
-  }
-};
+  }, [router]);
 
   const login = async (email: string, password: string) => {
     const response = await fetch('/api/auth/login', {
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, checkAuth }}>

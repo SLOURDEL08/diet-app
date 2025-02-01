@@ -26,15 +26,15 @@ const itemVariants = {
 export default function Login() {
   const { login } = useAuth();
   const router = useRouter();
-  const { isDarkMode } = useThemeConfig();
+  // Nous utilisons useThemeConfig sans déstructurer isDarkMode car il n'est pas utilisé
+  useThemeConfig();
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
- 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,8 +73,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#170312] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-      {/* Theme Toggle Button */}
-
       <motion.div
         variants={containerVariants}
         initial="hidden"

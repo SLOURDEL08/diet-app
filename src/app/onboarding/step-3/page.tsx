@@ -37,7 +37,7 @@ export default function Step3() {
   const { saveStepData, handleNextStep } = useOnboarding();
   const [interests, setInterests] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
 
   const toggleInterest = (interest: string) => {
     setInterests((prev) =>
@@ -179,7 +179,7 @@ export default function Step3() {
             transition={{ delay: 0.5 }}
             className="text-center text-sm text-slate-500 dark:text-white/40"
           >
-            Sélectionnez au moins un centre d'intérêt pour continuer
+            Sélectionnez au moins un centre dintérêt pour continuer
           </motion.p>
         </form>
       </motion.div>

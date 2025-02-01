@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Flame, Dumbbell, Apple, Soup } from 'lucide-react';
+import { Flame, Dumbbell, Apple, Soup, LucideIcon } from 'lucide-react';
 import { NutrientCard } from './NutrientCard';
 
 interface NutrientGridProps {
@@ -10,8 +9,22 @@ interface NutrientGridProps {
   fats: number;
 }
 
-export const NutrientGrid = ({ calories, protein, carbs, fats }) => {
-     const [activeIndex, setActiveIndex] = useState(0);
+interface NutrientData {
+  label: string;
+  value: number;
+  unit: string;
+  icon: LucideIcon;
+  iconColor: string;
+  maxValue: number;
+  barColor: {
+    bg: string;
+    fill: string;
+    darkBg: string;
+  };
+}
+
+export const NutrientGrid: React.FC<NutrientGridProps> = ({ calories, protein, carbs, fats }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,7 +33,8 @@ export const NutrientGrid = ({ calories, protein, carbs, fats }) => {
 
     return () => clearInterval(interval);
   }, []);
-  const nutrients = [
+
+  const nutrients: NutrientData[] = [
     {
       label: 'Calories',
       value: calories,
@@ -76,7 +90,7 @@ export const NutrientGrid = ({ calories, protein, carbs, fats }) => {
   ];
 
   return (
-     <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4">
       {nutrients.map((nutrient, index) => (
         <NutrientCard 
           key={index} 

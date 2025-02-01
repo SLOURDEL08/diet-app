@@ -3,21 +3,19 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ThumbsUp, ThumbsDown, Heart, Utensils, Cookie, Flame,
-  Scale, Timer, Filter, Settings, ChevronRight, ImageIcon,
-  AlertCircle, TagIcon, Clock, Leaf, Beef, Fish, Wheat,
-  Milk, Coffee, Sandwich, Salad
+  ThumbsUp, ThumbsDown, Heart, Flame, Timer, Leaf, Beef, Fish, Wheat,
+  Milk, LucideIcon
 } from 'lucide-react';
 import { MealTimeSelector } from '@/components/food-matcher/MealTimeSelector';
-import { NutritionWidget } from '@/components/food-matcher/NutritionWidget';
 import { RecipeGallery } from '@/components/food-matcher/RecipeGallery';
 import { DailyGoalsWidget } from '@/components/food-matcher/DailyGoalsWidget';
 import Image from 'next/image';
+
 // Types
 interface FoodPreference {
   id: string;
   label: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   active: boolean;
 }
 
@@ -38,26 +36,20 @@ interface Recipe {
   servings?: number;
   rating?: number;
   reviews?: number;
+  action?: 'like' | 'dislike' | 'save';
 }
 
 // Animation Variants
 const containerVariants = {
-  hidden: { 
-    opacity: 0 
-  },
+  hidden: { opacity: 0 },
   visible: { 
     opacity: 1,
-    transition: { 
-      staggerChildren: 0.1 
-    }
+    transition: { staggerChildren: 0.1 }
   }
 };
 
 const itemVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 20 
-  },
+  hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
@@ -70,10 +62,7 @@ const itemVariants = {
 };
 
 const cardVariants = {
-  initial: { 
-    scale: 0.8, 
-    opacity: 0 
-  },
+  initial: { scale: 0.8, opacity: 0 },
   enter: { 
     scale: 1, 
     opacity: 1,
@@ -86,12 +75,9 @@ const cardVariants = {
   exit: { 
     scale: 0.8, 
     opacity: 0,
-    transition: { 
-      duration: 0.2 
-    }
+    transition: { duration: 0.2 }
   }
 };
-
 
 
 // Composant principal
@@ -223,7 +209,6 @@ export default function FoodMatcher() {
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6">
                 Objectifs Nutritionnels
               </h2>
-              <NutritionWidget  />
             </motion.div>
 
             {/* Daily Goals */}

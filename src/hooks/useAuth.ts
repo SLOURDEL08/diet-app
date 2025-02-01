@@ -1,9 +1,7 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 export const useAuth = () => {
   const { data: session, status } = useSession();
-  const router = useRouter();
 
   const handleSignIn = async () => {
     await signIn('google', { callbackUrl: '/onboarding' });

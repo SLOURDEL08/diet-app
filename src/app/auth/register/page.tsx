@@ -37,7 +37,7 @@ const validators = {
 
 export default function Register() {
   const router = useRouter();
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
   
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [error, setError] = useState('');

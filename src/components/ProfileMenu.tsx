@@ -9,28 +9,9 @@ import {
   Mail,
   ChevronRight,
 } from 'lucide-react';
+import Image from 'next/image';
 
-type UserStatus = 'online' | 'away' | 'offline';
 
-type UserProfile = {
-  name: string;
-  role: string;
-  email: string;
-  status: UserStatus;
-  avatar?: string;
-  stats: {
-    recipes: number;
-    followers: number;
-  };
-};
-
-type MenuItem = {
-  icon: React.ComponentType;
-  label: string;
-  badge?: string;
-  variant?: 'default' | 'danger';
-  action: () => void;
-};
 
 export const ProfileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,8 +71,10 @@ export const ProfileMenu = () => {
         <div className="relative">
           <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center overflow-hidden">
             {user.avatar ? (
-              <img
+              <Image
                 src={user.avatar}
+                width={40}
+                height={40}
                 alt={user.name}
                 className="h-10 w-10 object-cover"
               />

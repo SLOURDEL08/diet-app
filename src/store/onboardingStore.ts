@@ -45,7 +45,7 @@ const initialSteps: OnboardingStep[] = [
 
 export const useOnboardingStore = create<OnboardingStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       currentStep: 1,
       steps: initialSteps,
       data: {

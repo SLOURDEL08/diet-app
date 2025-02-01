@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyJWT } from '@/lib/jwt';
-import { User, OnboardingDataModel, updateOnboardingStep } from '@/models/User';
+import { User, OnboardingDataModel } from '@/models/User';
 import connectDB from '@/lib/mongodb';
 
 export async function POST(request: NextRequest) {

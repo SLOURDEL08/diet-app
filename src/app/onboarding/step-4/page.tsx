@@ -38,7 +38,7 @@ export default function Step4() {
     emailFrequency: 'weekly',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { isDarkMode } = useThemeConfig();
+  useThemeConfig();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +70,7 @@ export default function Step4() {
           {/* Thème */}
           <motion.div variants={itemVariants} className="space-y-4">
             <label className="block text-lg font-medium text-slate-900 dark:text-white">
-              Thème de l'interface
+              Thème de linterface
             </label>
             <div className="flex gap-4">
               {(['light', 'dark'] as const).map((theme) => (

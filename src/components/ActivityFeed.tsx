@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Flame, Apple, Dumbbell, Timer, Target,
-  Calendar, TrendingUp, ChevronRight
+  Apple, Dumbbell, Timer,
+  ChevronRight
 } from 'lucide-react';
+
+type Intensity = 'low' | 'medium' | 'high';
 
 interface FitnessData {
   calories: {
@@ -23,8 +25,13 @@ interface FitnessData {
     name: string;
     duration: string;
     caloriesBurned: number;
-    intensity: 'low' | 'medium' | 'high';
+    intensity: Intensity;
   }[];
+}
+
+interface CircularProgressProps {
+  value: number;
+  max: number;
 }
 
 const SAMPLE_DATA: FitnessData = {
@@ -44,7 +51,7 @@ const SAMPLE_DATA: FitnessData = {
   ]
 };
 
-const CircularProgress = ({ value, max }) => {
+const CircularProgress: React.FC<CircularProgressProps> = ({ value, max }) => {
   const percentage = (value / max) * 100;
   
   return (
@@ -54,7 +61,6 @@ const CircularProgress = ({ value, max }) => {
       className="relative h-32 w-32"
     >
       <svg className="w-full h-full" viewBox="0 0 100 100">
-        {/* Fond */}
         <circle
           cx="50"
           cy="50"
@@ -64,7 +70,6 @@ const CircularProgress = ({ value, max }) => {
           className="text-slate-100 dark:text-white/10"
           strokeWidth="10"
         />
-        {/* Progression */}
         <motion.circle
           cx="50"
           cy="50"
@@ -82,7 +87,6 @@ const CircularProgress = ({ value, max }) => {
           transition={{ duration: 1.5, ease: "easeInOut" }}
           transform="rotate(-90 50 50)"
         />
-        {/* Texte central */}
         <text
           x="50"
           y="50"
@@ -97,8 +101,8 @@ const CircularProgress = ({ value, max }) => {
   );
 };
 
-const ActivityTag = ({ intensity }: { intensity: string }) => {
-  const colors = {
+const ActivityTag: React.FC<{ intensity: Intensity }> = ({ intensity }) => {
+  const colors: Record<Intensity, string> = {
     low: 'bg-primary/10 text-primary',
     medium: 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400',
     high: 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400'
@@ -111,8 +115,8 @@ const ActivityTag = ({ intensity }: { intensity: string }) => {
   );
 };
 
-export const FitnessWidget = () => {
-  const [data] = useState(SAMPLE_DATA);
+export const FitnessWidget: React.FC = () => {
+  const [data] = useState<FitnessData>(SAMPLE_DATA);
   const [activeView, setActiveView] = useState<'nutrition' | 'activity'>('nutrition');
 
   return (
